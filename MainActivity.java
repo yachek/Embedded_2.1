@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
         LineGraphSeries<DataPoint> series1 = new LineGraphSeries<>(generateSignal(signal));
         LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(fourier());
         GraphView graph = findViewById(R.id.graph1);
-        customizationGraph(graph, series1);
+        customizationGraph(graph, series1, -5, 6);
         graph = findViewById(R.id.graph2);
-        customizationGraph(graph, series2);
+        customizationGraph(graph, series2, 0, 80);
     }
 
     private DataPoint[] generateSignal(double[] res) {
@@ -63,10 +63,13 @@ public class MainActivity extends AppCompatActivity {
         return res;
     }
 
-    private void customizationGraph(GraphView graph, LineGraphSeries line) {
+    private void customizationGraph(GraphView graph, LineGraphSeries line, int miny, int maxy) {
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(0);
         graph.getViewport().setMaxX(30);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMaxY(maxy);
+        graph.getViewport().setMinY(miny);
         // enable scrolling
         graph.getViewport().setScrollable(true);
 
