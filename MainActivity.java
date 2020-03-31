@@ -13,11 +13,13 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private static int n = 8;
-    private static int N = 256;
+    private static int N = 1024;
     private static double W = 1100;
     private double real;
     private double imagine;
     private double[] signal = new double[N];
+    private Double[] cos = new Double[N*N];
+    private Double[] sin = new Double[N*N];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         GraphView graph = findViewById(R.id.graph1);
         customizationGraph(graph, series1, -5, 6);
         graph = findViewById(R.id.graph2);
-        customizationGraph(graph, series2, 0, 80);
+        customizationGraph(graph, series2, 0, (int)(N / 3.2));
     }
 
     private DataPoint[] generateSignal(double[] res) {
@@ -51,12 +53,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private DataPoint[] fourier() {
-        DataPoint[] res = new DataPoint[N - 1];
-        for (int i = 0; i < N - 1; i++) {
+        DataPoint[] res = new DataPoint[N];
+        for (int i = 0; i < N; i++) {
             real = imagine = 0;
-            for (int j = 0; j < N - 1; j++) {
-                real += signal[j] * Math.cos(2 * Math.PI * i * j / N);
-                imagine -= signal[j] * Math.sin(2 * Math.PI * i * j / N);
+            for (int j = 0; j < N; j++) {
+                if(cos[i*j] == null) {
+                    cos[i * j] = Math.cos(2 * Math.PI * i * j / N);
+                    sin[i * j] = Math.sin(2 * Math.PI * i * j / N);
+                    real += signal[j] * cos[i * j];
+                    imagine -= signal[j] * sin[i * j];
+                } else {
+                    real += signal[j] * cos[i * j];
+                    imagine -= signal[j] * sin[i * j];
+                }
             }
             res[i] = new DataPoint(i, Math.sqrt(Math.pow(real, 2) + Math.pow(imagine, 2)));
         }
